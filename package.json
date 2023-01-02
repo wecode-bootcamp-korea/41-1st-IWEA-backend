@@ -26,5 +26,8 @@
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
     "typeorm": "^0.3.11"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
