@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const userDao = require("../models/userDao");
 
-const signup = async (name, email, password, address, phoneNumber) => {
+const signup = async (name, email, password, phoneNumber, address) => {
   const pwValidation = new RegExp(
     "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})"
   );
@@ -21,8 +21,8 @@ const signup = async (name, email, password, address, phoneNumber) => {
     name,
     email,
     hashedPassword,
-    address,
-    phoneNumber
+    phoneNumber,
+    address
   );
 
   return createUser;

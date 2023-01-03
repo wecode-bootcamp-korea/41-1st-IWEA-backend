@@ -1,17 +1,17 @@
 const { appDataSource } = require("./appDataSource");
 
-const signup = async (name, email, hashedPassword, address, phoneNumber) => {
+const signup = async (name, email, hashedPassword, phoneNumber, address) => {
   try {
     return await appDataSource.query(
       `INSERT INTO users (
         name,
         email,
         password,
-        address,
-        phone_number
+        phone_number,
+        address
         ) VALUES (?, ?, ?, ?, ?);
         `,
-      [name, email, hashedPassword, address, phoneNumber]
+      [name, email, hashedPassword, phoneNumber, address]
     );
   } catch (err) {
     console.log(err);
