@@ -1,7 +1,6 @@
 const userService = require("../services/userService");
 
 const signup = async (req, res) => {
-  console.log("11111111111111");
   try {
     const { name, email, password, phoneNumber, address } = req.body;
 
