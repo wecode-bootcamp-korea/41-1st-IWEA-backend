@@ -6,7 +6,7 @@ CREATE TABLE users (
   name VARCHAR(50) NOT NULL,
   phone_number VARCHAR(20) NOT NULL,
   address VARCHAR(50) NOT NULL,
-  points INT NULL DEFAULT 10000000,
+  points DECIMAL(10, 3) NULL DEFAULT 10000000,
   PRIMARY KEY (id),
   CONSTRAINT users_ukey UNIQUE (email)
 );
