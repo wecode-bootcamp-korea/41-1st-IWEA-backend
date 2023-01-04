@@ -8,5 +8,6 @@ CREATE TABLE payments(
 	PRIMARY KEY (id),
 	FOREIGN KEY (order_id) REFERENCES orders (id)
 );
+
 -- migrate:down
 DROP TABLE payments;
