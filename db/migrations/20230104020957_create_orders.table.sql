@@ -8,7 +8,8 @@ CREATE TABLE orders (
   updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES users (id),
-  FOREIGN KEY (order_status_id) REFERENCES order_status (id)
+  FOREIGN KEY (order_status_id) REFERENCES order_status (id),
+  ON DELETE CASCADE
 );
 
 -- migrate:down

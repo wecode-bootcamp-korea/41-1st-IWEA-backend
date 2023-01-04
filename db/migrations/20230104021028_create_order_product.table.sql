@@ -9,7 +9,8 @@ CREATE TABLE order_product (
   PRIMARY KEY (id),
   FOREIGN KEY (order_id) REFERENCES orders (id),
   FOREIGN KEY (product_id) REFERENCES products (id),
-  FOREIGN KEY (order_status_id) REFERENCES order_status (id)
+  FOREIGN KEY (order_status_id) REFERENCES order_status (id),
+  ON DELETE CASCADE
 );
 
 -- migrate:down

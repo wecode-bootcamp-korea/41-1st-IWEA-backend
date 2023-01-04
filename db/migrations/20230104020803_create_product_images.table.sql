@@ -5,6 +5,7 @@ CREATE TABLE product_images (
   product_id INT NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (product_id) REFERENCES products (id)
+  ON DELETE CASCADE
 );
 
 -- migrate:down
