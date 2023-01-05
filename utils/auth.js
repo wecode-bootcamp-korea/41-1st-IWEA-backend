@@ -1,16 +1,26 @@
 const jwt = require("jsonwebtoken");
 
 const validateToken = async (req, res, next) => {
-  try {
-    const jwtToken = req.headers.authorization;
-    const jwtVerify = jwt.verify(jwtToken, process.env.secretKey);
+  const accessToken = req.headers.authorization;
 
-    req.userId = jwtVerify;
-    next();
-  } catch (err) {
-    res.status(401).json({ message: "Invalid Access Token" });
-    next(err);
+  if (!accessToken) {
+    const error = new Error("NEED_ACCESS_TOKEN");
+    error.statusCode = 401;
+
+    return res.status(error.statusCode).json({ message: error.message });
   }
+
+  const decoded = await jwt.verify(accessToken, process.env.secretKey);
+
+  if (!decoded) {
+    const error = new Error("USER_DOES_NOT_EXIST");
+    error.statusCode = 404;
+
+    return res.status(error.statusCode).json({ message: error.message });
+  }
+
+  req.userId = decoded.userId;
+  next();
 };
 
 module.exports = {
