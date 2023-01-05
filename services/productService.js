@@ -1,8 +1,7 @@
 const productDao = require("../models/productDao");
 
 const allProducts = async () => {
-  const results = await productDao.allProducts();
-  return results;
+  return await productDao.allProducts();
 };
 
 const productsOfCategoryList = async (categoryId) => {
