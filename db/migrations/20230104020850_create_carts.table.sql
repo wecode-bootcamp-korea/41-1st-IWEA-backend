@@ -7,8 +7,9 @@ CREATE TABLE carts (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
+  UNIQUE KEY unique_index (user_id, product_id),
   FOREIGN KEY (user_id) REFERENCES users (id),
-  FOREIGN KEY (product_id) REFERENCES products (id),
+  FOREIGN KEY (product_id) REFERENCES products (id)
   ON DELETE CASCADE
 );
 

@@ -6,18 +6,9 @@ const cartController = require("../controllers/cartController");
 const { validateToken } = require("../utils/auth");
 
 router.get("", validateToken, cartController.cartList);
-router.post(
-  "/productId/:productId",
-  validateToken,
-  cartController.addCartInDetailPage
-);
-router.patch(
-  "/productId/:productId",
-  validateToken,
-  cartController.changeQuantity
-);
-router.delete("/productId/:productId", validateToken, cartController.deleteOne);
-router.delete("", validateToken, cartController.deleteAll);
+router.post("", validateToken, cartController.addCart);
+router.patch("", validateToken, cartController.changeQuantity);
+router.delete("", validateToken, cartController.deleteCart);
 
 module.exports = {
   router,

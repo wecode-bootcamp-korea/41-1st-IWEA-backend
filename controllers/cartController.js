@@ -11,21 +11,13 @@ const cartList = async (req, res) => {
   }
 };
 
-const addCartInDetailPage = async (req, res) => {
+const addCart = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { productId } = req.body;
 
-    const cartCheck = await cartService.addCartInDetailPage(
-      req.userId,
-      productId
-    );
+    await cartService.addCart(req.userId, productId);
 
-    if (cartCheck == "addNewProductInCart") {
-      return res.status(201).json({ message: "addNewProductInCart" });
-    }
-    if (cartCheck == "plusOneQuantity") {
-      return res.status(201).json({ message: "plusOneQuantity" });
-    }
+    return res.status(201).json({ message: "updateCart" });
   } catch (err) {
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });
@@ -34,10 +26,10 @@ const addCartInDetailPage = async (req, res) => {
 
 const changeQuantity = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { cartId } = req.body;
     const { quantity } = req.body;
 
-    await cartService.changeQuantity(req.userId, productId, quantity);
+    await cartService.changeQuantity(req.userId, cartId, quantity);
 
     const list = await cartService.cartList(req.userId);
 
@@ -48,24 +40,11 @@ const changeQuantity = async (req, res) => {
   }
 };
 
-const deleteOne = async (req, res) => {
+const deleteCart = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { cartId } = req.query;
 
-    await cartService.deleteOne(req.userId, productId);
-
-    const list = await cartService.cartList(req.userId);
-
-    return res.status(201).json({ data: list });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-};
-
-const deleteAll = async (req, res) => {
-  try {
-    await cartService.deleteAll(req.userId);
+    await cartService.deleteCart(cartId);
 
     return res.status(201).json({ message: "CartDeleted" });
   } catch (err) {
@@ -76,8 +55,7 @@ const deleteAll = async (req, res) => {
 
 module.exports = {
   cartList,
-  addCartInDetailPage,
+  addCart,
   changeQuantity,
-  deleteOne,
-  deleteAll,
+  deleteCart,
 };

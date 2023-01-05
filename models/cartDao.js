@@ -4,6 +4,7 @@ const cartList = async (userId) => {
   try {
     return await appDataSource.query(
       `SELECT
+        c.id AS cartId,
         p.thumbnail,
         p.korean_name,
         p.english_name,
@@ -23,61 +24,24 @@ const cartList = async (userId) => {
   }
 };
 
-const cartCheck = async (userId, productId) => {
-  try {
-    const [check] = await appDataSource.query(
-      `SELECT
-        id
-      FROM
-        carts
-      WHERE 
-        user_id = ? 
-      AND 
-        product_id = ?;`,
-      [userId, productId]
-    );
-    return check;
-  } catch (err) {
-    console.log(err);
-    const error = new Error("Can't check if this item is in cart");
-    error.statusCode = 500;
-  }
-};
-
-const addNewProductInCart = async (userId, productId) => {
+const addCart = async (userId, productId) => {
   try {
     return await appDataSource.query(
       `INSERT INTO
-        carts (user_id, product_id, quantity)
-      VALUES (?, ?, 1);`,
-      [userId, productId]
+          carts (user_id, product_id, quantity) 
+      VALUES (?, ?, 1)
+      ON DUPLICATE KEY UPDATE
+       user_id = ?, product_id = ?, quantity = quantity + 1;`,
+      [userId, productId, userId, productId]
     );
   } catch (err) {
     console.log(err);
-    const error = new Error("Can't add the product in cart");
+    const error = new Error("Can't add product in cart!");
     error.statusCode = 500;
   }
 };
 
-const plusOneQuantity = async (userId, productId) => {
-  try {
-    return await appDataSource.query(
-      `UPDATE 
-        carts 
-      SET 
-        quantity = quantity + 1 
-      WHERE 
-        user_id = ? AND product_id = ?;`,
-      [userId, productId]
-    );
-  } catch (err) {
-    console.log(err);
-    const error = new Error("Can't plus one quantity");
-    error.statusCode = 500;
-  }
-};
-
-const changeQuantity = async (userId, productId, quantity) => {
+const changeQuantity = async (userId, cartId, quantity) => {
   try {
     return await appDataSource.query(
       `UPDATE 
@@ -85,9 +49,9 @@ const changeQuantity = async (userId, productId, quantity) => {
       SET 
         quantity = ? 
       WHERE 
-        user_id = ? AND product_id = ?;
+        id = ? AND user_id = ?
       `,
-      [quantity, userId, productId]
+      [quantity, cartId, userId]
     );
   } catch (err) {
     console.log(err);
@@ -96,44 +60,26 @@ const changeQuantity = async (userId, productId, quantity) => {
   }
 };
 
-const deleteOne = async (userId, productId) => {
+const deleteCart = async (cartId) => {
   try {
-    return await appDataSource.query(
+    await appDataSource.query(
       `DELETE FROM
         carts
-      WHERE 
-        user_id = ? AND product_id = ?;
+      WHERE
+        carts.id IN (?);
       `,
-      [userId, productId]
+      [cartId]
     );
   } catch (err) {
     console.log(err);
-    const error = new Error("Can't delete products from cart");
-    error.statusCode = 500;
-  }
-};
-
-const deleteAll = async (userId) => {
-  try {
-    return await appDataSource.query(
-      `DELETE FROM
-        carts
-      WHERE user_id = ?;`,
-      [userId]
-    );
-  } catch (err) {
-    console.log(err);
-    const error = new Error("Can't delete products from cart");
+    const error = new Error("Can't delete cart!");
     error.statusCode = 500;
   }
 };
 
 module.exports = {
   cartList,
-  cartCheck,
-  addNewProductInCart,
-  plusOneQuantity,
+  addCart,
   changeQuantity,
-  deleteOne,
-  deleteAll,
+  deleteCart,
 };
