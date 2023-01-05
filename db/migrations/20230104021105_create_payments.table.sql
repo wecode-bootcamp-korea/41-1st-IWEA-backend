@@ -6,7 +6,8 @@ CREATE TABLE payments(
 	methods VARCHAR(50) NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id),
-	FOREIGN KEY (order_id) REFERENCES orders (id)
+	FOREIGN KEY (order_id) REFERENCES orders (id),
+	ON DELETE CASCADE
 );
 
 -- migrate:down

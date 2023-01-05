@@ -4,7 +4,8 @@ CREATE TABLE product_images (
   image_url VARCHAR(2000) NOT NULL,
   product_id INT NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (product_id) REFERENCES categories (id)
+  FOREIGN KEY (product_id) REFERENCES products (id)
+  ON DELETE CASCADE
 );
 
 -- migrate:down
