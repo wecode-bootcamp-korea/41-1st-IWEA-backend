@@ -4,6 +4,7 @@ const cartList = async (userId) => {
   try {
     return await appDataSource.query(
       `SELECT
+        u.points AS userPoints,
         c.id AS cartId,
         p.thumbnail,
         p.korean_name,
@@ -13,6 +14,7 @@ const cartList = async (userId) => {
       FROM 
         carts c
       INNER JOIN products p ON p.id = c.product_id
+      INNER JOIN users u ON u.id = c.user_id
       WHERE 
         c.user_id = ?;`,
       [userId]
