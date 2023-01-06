@@ -14,7 +14,7 @@ const productsList = async (query) => {
     ? sortMethod[query.sort]
     : sortMethod.old;
 
-  let categoryId = query.categoryId ? query.categoryId : "";
+  let categoryId = query.category ? query.category : "";
   let categoryString = categoryId ? `WHERE category_id = ${categoryId}` : ``;
 
   return await productDao.productsList(categoryString, orderByString);
