@@ -62,8 +62,30 @@ const getUserId = async (email) => {
   }
 };
 
+const userInfo = async (userId) => {
+  try {
+    const [info] = await appDataSource.query(
+      `SELECT
+        name,
+        points
+      FROM
+        users
+      WHERE
+        id = ?;`,
+      [userId]
+    );
+    return info;
+  } catch (err) {
+    console.log(err);
+    const error = new Error("GET_USER_INFO_FAILED");
+    error.statusCode = 401;
+    throw error;
+  }
+};
+
 module.exports = {
   signup,
   getHashedPassword,
   getUserId,
+  userInfo,
 };
