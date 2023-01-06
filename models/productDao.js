@@ -17,7 +17,7 @@ const productsList = async (categoryString, orderByString) => {
     return productsList;
   } catch (err) {
     console.log(err);
-    const error = new Error("Can't load all products list");
+    const error = new Error("Fail to load products list");
     error.statusCode = 500;
   }
 };
@@ -51,13 +51,12 @@ const productDetails = async (productId) => {
     return details;
   } catch (err) {
     console.log(err);
-    const error = new Error("Can't load details of products");
+    const error = new Error("Fail to load details of products");
     error.statusCode = 500;
   }
 };
 
 module.exports = {
   productsList,
-  // productsOfCategoryList,
   productDetails,
 };
