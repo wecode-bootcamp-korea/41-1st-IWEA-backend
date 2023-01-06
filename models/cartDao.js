@@ -28,7 +28,7 @@ const addCart = async (userId, productId) => {
   try {
     return await appDataSource.query(
       `INSERT INTO
-          carts (user_id, product_id, quantity) 
+        carts (user_id, product_id, quantity) 
       VALUES (?, ?, 1)
       ON DUPLICATE KEY UPDATE
        user_id = ?, product_id = ?, quantity = quantity + 1;`,
