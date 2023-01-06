@@ -34,7 +34,19 @@ const signin = async (req, res) => {
   }
 };
 
+const userInfo = async (req, res) => {
+  try {
+    const info = await userService.userInfo(req.userId);
+
+    return res.status(200).json({ data: info });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 401).json({ message: err.message });
+  }
+};
+
 module.exports = {
   signup,
   signin,
+  userInfo,
 };
