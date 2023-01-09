@@ -1,20 +1,18 @@
 const productDao = require("../models/productDao");
 
-const sortMethod = {
+const sortMethod = Object.freeze({
   cheap: "price ASC",
   expensive: "price DESC",
   new: "created_at DESC",
   old: "created_at ASC",
   nameASC: "korean_name ASC",
   nameDESC: "korean_name DESC",
-};
+});
 
-const productsList = async (query) => {
-  let orderByString = sortMethod[query.sort]
-    ? sortMethod[query.sort]
-    : sortMethod.old;
+const productsList = async ({ category, sort }) => {
+  let orderByString = sortMethod[sort] ? sortMethod[sort] : sortMethod.old;
 
-  let categoryId = query.category ? query.category : "";
+  let categoryId = category ? category : "";
   let categoryString = categoryId ? `WHERE category_id = ${categoryId}` : ``;
 
   return await productDao.productsList(categoryString, orderByString);
