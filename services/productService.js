@@ -7,13 +7,14 @@ const sortMethod = Object.freeze({
   old: "created_at ASC",
   nameASC: "korean_name ASC",
   nameDESC: "korean_name DESC",
+  null: "created_at ASC",
 });
 
 const productsList = async ({ category, sort }) => {
-  let orderByString = sortMethod[sort] ? sortMethod[sort] : sortMethod.old;
+  let orderByString = sortMethod[sort];
 
-  let categoryId = category ? category : "";
-  let categoryString = categoryId ? `WHERE category_id = ${categoryId}` : ``;
+  let categoryString =
+    category !== "null" ? `WHERE category_id = ${category}` : ``;
 
   return await productDao.productsList(categoryString, orderByString);
 };
