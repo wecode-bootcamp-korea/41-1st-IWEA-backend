@@ -9,13 +9,32 @@ const sortMethod = Object.freeze({
   nameDESC: "korean_name DESC",
 });
 
-const productsList = async ({ category, sort }) => {
+const productsList = async ({ category, sort, page, pageSize }) => {
   let orderByString = sortMethod[sort] ? sortMethod[sort] : sortMethod.old;
 
   let categoryId = category ? category : "";
   let categoryString = categoryId ? `WHERE category_id = ${categoryId}` : ``;
 
-  return await productDao.productsList(categoryString, orderByString);
+  let start = 0;
+  if (page <= 0) {
+    page = 1;
+  } else {
+    start = (page - 1) * pageSize;
+  }
+
+  const totalCount = await productDao.totalCount(categoryString);
+
+  if (page > Math.round(totalCount[0].cnt / pageSize)) {
+    return null;
+  }
+
+  let limitString = `LIMIT ${start}, ${pageSize}`;
+
+  return await productDao.productsList(
+    categoryString,
+    orderByString,
+    limitString
+  );
 };
 
 const productDetails = async (productId) => {

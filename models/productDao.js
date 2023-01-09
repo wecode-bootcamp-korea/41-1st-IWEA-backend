@@ -1,6 +1,23 @@
 const { appDataSource } = require("./appDataSource");
 
-const productsList = async (categoryString, orderByString) => {
+const totalCount = async (categoryString) => {
+  try {
+    return await appDataSource.query(
+      `SELECT
+      count(id) AS cnt
+    FROM
+      products
+    ${categoryString}
+   `
+    );
+  } catch (err) {
+    console.log(err);
+    const error = new Error("Fail to count!");
+    error.statusCode = 500;
+  }
+};
+
+const productsList = async (categoryString, orderByString, limitString) => {
   try {
     const productsList = await appDataSource.query(
       `SELECT
@@ -12,7 +29,8 @@ const productsList = async (categoryString, orderByString) => {
       FROM
         products
       ${categoryString}
-      ORDER BY ${orderByString};`
+      ORDER BY ${orderByString}
+      ${limitString};`
     );
     return productsList;
   } catch (err) {
@@ -57,6 +75,7 @@ const productDetails = async (productId) => {
 };
 
 module.exports = {
+  totalCount,
   productsList,
   productDetails,
 };
