@@ -8,6 +8,7 @@ const cartList = async (userId) => {
         JSON_ARRAYAGG(
           JSON_OBJECT(
             'cartId', c.id,
+            'productId', p.id,
             'thumbnail', p.thumbnail,
             'koreanName', p.korean_name,
             'englishName', p.english_name,
