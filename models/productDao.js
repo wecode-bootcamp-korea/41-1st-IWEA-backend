@@ -1,24 +1,44 @@
 const { appDataSource } = require("./appDataSource");
 
-const productsList = async (categoryString, orderByString) => {
+const productsList = async (categoryId, sort, offset, limit) => {
+  let whereClause = categoryId ? `WHERE category_id = ${categoryId}` : ``;
+
+  const sortMethod = Object.freeze({
+    cheap: "p.price ASC",
+    expensive: "p.price DESC",
+    new: "p.created_at DESC",
+    old: "p.created_at ASC",
+    nameASC: "p.korean_name ASC",
+    nameDESC: "p.korean_name DESC",
+  });
+
+  const queryRunner = appDataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+
   try {
-    const productsList = await appDataSource.query(
-      `SELECT
-        id,
-        korean_name,
-        english_name,
-        price,
-        thumbnail
-      FROM
-        products
-      ${categoryString}
-      ORDER BY ${orderByString};`
+    const productsList = await queryRunner.query(
+      `SELECT SQL_CALC_FOUND_ROWS
+        p.id AS productId,
+        p.korean_name AS koreanName,
+        p.english_name AS englishName,
+        p.price,
+        p.thumbnail
+      FROM products p
+      ${whereClause}
+      ORDER BY ${sortMethod[sort]}
+      LIMIT ${limit} OFFSET ${offset}`
     );
-    return productsList;
+
+    const [totalCount] = await queryRunner.query(
+      `SELECT FOUND_ROWS() AS totalCount`
+    );
+
+    return { productsList, totalCount };
   } catch (err) {
-    console.log(err);
-    const error = new Error("Fail to load products list");
-    error.statusCode = 500;
+    await queryRunner.rollbackTransaction();
+  } finally {
+    await queryRunner.release();
   }
 };
 
