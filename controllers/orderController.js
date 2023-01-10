@@ -1,9 +1,10 @@
 const orderService = require("../services/orderService");
 
-const addOrder = async (req, res) => {
+const createOrder = async (req, res) => {
   const { cartId, productId, quantity, totalPrice } = req.body;
+  // const { products } = req.body;
 
-  await orderService.addOrder(
+  await orderService.createOrder(
     req.userId,
     cartId,
     productId,
@@ -13,9 +14,9 @@ const addOrder = async (req, res) => {
   return res.status(201).json({ message: "Order Success!" });
 };
 
-const orderList = async (req, res) => {
+const getOrder = async (req, res) => {
   try {
-    const list = await orderService.orderList(req.userId);
+    const list = await orderService.getOrder(req.userId);
 
     return res.status(201).json({ data: list });
   } catch (err) {
@@ -33,7 +34,7 @@ const cancelOrder = async (req, res) => {
 };
 
 module.exports = {
-  addOrder,
-  orderList,
+  createOrder,
+  getOrder,
   cancelOrder,
 };

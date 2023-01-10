@@ -1,28 +1,23 @@
 const { appDataSource } = require("./appDataSource");
 
-// user points 찾는 쿼리
-const userPoint = async (userId) => {
-  const userPoints = await appDataSource.query(
-    `SELECT
-      points
-    FROM
-      users
-    WHERE
-      id =?
-    `,
-    [userId]
-  );
-  return userPoints;
-};
+const OrderStatusId = Object.freeze({
+  DONE: 1,
+});
 
-const MoveToOrder = async (userId, cartId, totalPrice) => {
+const queryRunner = appDataSource.createQueryRunner();
+
+await queryRunner.connect();
+
+await queryRunner.startTransaction();
+
+const createOrder = async (userId, cartId, totalPrice) => {
   try {
     // order 테이블에 결제 완료
     await appDataSource.query(
       `INSERT INTO
         orders (user_id, order_status_id)
       VALUES
-        (?, 1);
+        (?, ${OrderStatusId.DONE});
       `,
       [userId]
     );
@@ -85,7 +80,7 @@ const updateOrderProduct = async (values, orderId, totalPrice) => {
   }
 };
 
-const orderList = async (userId) => {
+const getOrder = async (userId) => {
   try {
     return await appDataSource.query(
       `SELECT
@@ -133,7 +128,7 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
 
     // users 테이블에서 user 포인트 반환 ^^
     return await appDataSource.query(
-      `UPDATE
+      `UPDATE 
         users
       SET
         points = points + ?
@@ -150,9 +145,8 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
 };
 
 module.exports = {
-  userPoint,
-  MoveToOrder,
+  createOrder,
   updateOrderProduct,
-  orderList,
+  getOrder,
   cancelOrder,
 };

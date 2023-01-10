@@ -1,7 +1,7 @@
 const orderDao = require("../models/orderDao");
 
-const addOrder = async (userId, cartId, productId, quantity, totalPrice) => {
-  const userPoint = await orderDao.userPoint(userId);
+const createOrder = async (userId, cartId, productId, quantity, totalPrice) => {
+  const userPoint = await userDao.userPoint(userId);
 
   if (userPoint < totalPrice || totalPrice < 0) {
     const error = new Error("Not_Enough_Points!");
@@ -19,11 +19,13 @@ const addOrder = async (userId, cartId, productId, quantity, totalPrice) => {
 
   console.log("values", values);
 
-  return await orderDao.updateOrderProduct(values, orderId, totalPrice);
+  await orderDao.updateOrderProduct(values, orderId, totalPrice);
+
+  // await cartDao.deleteCarts(cartIds)
 };
 
-const orderList = async (userId) => {
-  return await orderDao.orderList(userId);
+const getOrder = async (userId) => {
+  return await orderDao.getOrder(userId);
 };
 
 const cancelOrder = async (userId, totalPrice, orderId) => {
@@ -31,7 +33,7 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
 };
 
 module.exports = {
-  addOrder,
-  orderList,
+  createOrder,
+  getOrder,
   cancelOrder,
 };
