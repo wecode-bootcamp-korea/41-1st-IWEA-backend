@@ -16,6 +16,7 @@ const productsList = async ({ category, sort, page, pageSize }) => {
   let categoryString = categoryId ? `WHERE category_id = ${categoryId}` : ``;
 
   let start = 0;
+
   if (page <= 0) {
     page = 1;
   } else {

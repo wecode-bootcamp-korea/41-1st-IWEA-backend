@@ -4,11 +4,11 @@ const totalCount = async (categoryString) => {
   try {
     return await appDataSource.query(
       `SELECT
-      count(id) AS cnt
-    FROM
-      products
-    ${categoryString}
-   `
+        count(id) AS cnt
+      FROM
+        products
+      ${categoryString}
+      `
     );
   } catch (err) {
     console.log(err);
@@ -16,18 +16,33 @@ const totalCount = async (categoryString) => {
     error.statusCode = 500;
   }
 };
+// `SELECT
+//         id,
+//         korean_name,
+//         english_name,
+//         price,
+//         thumbnail
+//       FROM
+//         products
+//       ${categoryString}
+//       ORDER BY ${orderByString}
+//       ${limitString};`
 
 const productsList = async (categoryString, orderByString, limitString) => {
   try {
     const productsList = await appDataSource.query(
       `SELECT
-        id,
-        korean_name,
-        english_name,
-        price,
-        thumbnail
-      FROM
-        products
+        COUNT(id) AS cnt,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'productId', id,
+            'koreanName', korean_name,
+            'englishName', english_name,
+            'price', price,
+            'thumbnail', thumbnail
+          )
+        ) AS productDetail
+      FROM products
       ${categoryString}
       ORDER BY ${orderByString}
       ${limitString};`
