@@ -1,29 +1,8 @@
 const { appDataSource } = require("./appDataSource");
 
-const allProducts = async () => {
+const productsList = async (categoryString, orderByString) => {
   try {
-    const allProducts = await appDataSource.query(
-      `SELECT
-        id,
-        korean_name,
-        english_name,
-        price,
-        thumbnail
-      FROM
-        products;
-      `
-    );
-    return allProducts;
-  } catch (err) {
-    console.log(err);
-    const error = new Error("Can't load all products list");
-    error.statusCode = 500;
-  }
-};
-
-const productsOfCategoryList = async (categoryId) => {
-  try {
-    const list = await appDataSource.query(
+    const productsList = await appDataSource.query(
       `SELECT
         id,
         korean_name,
@@ -32,14 +11,13 @@ const productsOfCategoryList = async (categoryId) => {
         thumbnail
       FROM
         products
-      WHERE
-        category_id = ?;`,
-      [categoryId]
+      ${categoryString}
+      ORDER BY ${orderByString};`
     );
-    return list;
+    return productsList;
   } catch (err) {
     console.log(err);
-    const error = new Error("Can't load products of category");
+    const error = new Error("Fail to load products list");
     error.statusCode = 500;
   }
 };
@@ -73,13 +51,12 @@ const productDetails = async (productId) => {
     return details;
   } catch (err) {
     console.log(err);
-    const error = new Error("Can't load details of products");
+    const error = new Error("Fail to load details of products");
     error.statusCode = 500;
   }
 };
 
 module.exports = {
-  allProducts,
-  productsOfCategoryList,
+  productsList,
   productDetails,
 };

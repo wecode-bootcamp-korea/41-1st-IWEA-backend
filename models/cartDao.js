@@ -2,21 +2,29 @@ const { appDataSource } = require("./appDataSource");
 
 const cartList = async (userId) => {
   try {
-    return await appDataSource.query(
+    const [list] = await appDataSource.query(
       `SELECT
-        c.id AS cartId,
-        p.thumbnail,
-        p.korean_name,
-        p.english_name,
-        p.price AS eachPrice,
-        c.quantity
+        u.points AS userPoints,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'cartId', c.id,
+            'productId', p.id,
+            'thumbnail', p.thumbnail,
+            'koreanName', p.korean_name,
+            'englishName', p.english_name,
+            'eachPrice', p.price,
+            'quantity', c.quantity
+          )
+        ) AS cartList
       FROM 
         carts c
       INNER JOIN products p ON p.id = c.product_id
+      INNER JOIN users u ON u.id = c.user_id
       WHERE 
-        c.user_id = ?;`,
+        c.user_id = ?`,
       [userId]
     );
+    return list;
   } catch (err) {
     console.log(err);
     const error = new Error("Can't load cart list");
