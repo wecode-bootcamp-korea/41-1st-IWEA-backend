@@ -9,7 +9,7 @@ const sortMethod = Object.freeze({
   nameDESC: "korean_name DESC",
 });
 
-const productsList = async ({ category, sort, page, pageSize }) => {
+const productsList = async ({ category, sort, offset, limit }) => {
   let orderByString = sortMethod[sort] ? sortMethod[sort] : sortMethod.old;
 
   let categoryId = category ? category : "";
@@ -17,19 +17,19 @@ const productsList = async ({ category, sort, page, pageSize }) => {
 
   let start = 0;
 
-  if (page <= 0) {
-    page = 1;
+  if (offset <= 0) {
+    start = 1;
   } else {
-    start = (page - 1) * pageSize;
+    start = (offset - 1) * limit;
   }
 
   const totalCount = await productDao.totalCount(categoryString);
 
-  if (page > Math.round(totalCount[0].cnt / pageSize)) {
+  if (offset > Math.round(totalCount[0].cnt / limit)) {
     return null;
   }
 
-  let limitString = `LIMIT ${start}, ${pageSize}`;
+  let limitString = `LIMIT ${start}, ${limit}`;
 
   return await productDao.productsList(
     categoryString,
