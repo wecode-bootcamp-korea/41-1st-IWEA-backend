@@ -1,27 +1,24 @@
+const userDao = require("../models/userDao");
 const orderDao = require("../models/orderDao");
 
-const createOrder = async (userId, cartId, productId, quantity, totalPrice) => {
-  const userPoint = await userDao.userPoint(userId);
+const createOrder = async (userId, cartId, products, totalPrice) => {
+  const userInfo = await userDao.userInfo(userId);
 
-  if (userPoint < totalPrice || totalPrice < 0) {
+  if (userInfo.points - totalPrice < 0) {
     const error = new Error("Not_Enough_Points!");
     error.statusCode = 400;
 
     throw error;
   }
 
-  const orderId = await orderDao.MoveToOrder(userId, cartId, totalPrice);
+  const orderId = await orderDao.createOrder(
+    userId,
+    cartId,
+    products,
+    totalPrice
+  );
 
-  const values = [];
-  for (let i = 0; i < productId.length; i++) {
-    values.push([orderId, productId[i], quantity, 1]);
-  }
-
-  console.log("values", values);
-
-  await orderDao.updateOrderProduct(values, orderId, totalPrice);
-
-  // await cartDao.deleteCarts(cartIds)
+  return orderId;
 };
 
 const getOrder = async (userId) => {

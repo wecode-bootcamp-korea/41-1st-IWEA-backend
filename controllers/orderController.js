@@ -1,16 +1,9 @@
 const orderService = require("../services/orderService");
 
 const createOrder = async (req, res) => {
-  const { cartId, productId, quantity, totalPrice } = req.body;
-  // const { products } = req.body;
+  const { cartId, products, totalPrice } = req.body;
 
-  await orderService.createOrder(
-    req.userId,
-    cartId,
-    productId,
-    quantity,
-    totalPrice
-  );
+  await orderService.createOrder(req.userId, cartId, products, totalPrice);
   return res.status(201).json({ message: "Order Success!" });
 };
 
