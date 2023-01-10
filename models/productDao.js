@@ -16,17 +16,6 @@ const totalCount = async (categoryString) => {
     error.statusCode = 500;
   }
 };
-// `SELECT
-//         id,
-//         korean_name,
-//         english_name,
-//         price,
-//         thumbnail
-//       FROM
-//         products
-//       ${categoryString}
-//       ORDER BY ${orderByString}
-//       ${limitString};`
 
 const productsList = async (categoryString, orderByString, limitString) => {
   try {
