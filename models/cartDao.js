@@ -32,7 +32,7 @@ const cartList = async (userId) => {
   }
 };
 
-const addCart = async (userId, productId) => {
+const createCart = async (userId, productId) => {
   try {
     return await appDataSource.query(
       `INSERT INTO
@@ -87,7 +87,7 @@ const deleteCart = async (cartId) => {
 
 module.exports = {
   cartList,
-  addCart,
+  createCart,
   changeQuantity,
   deleteCart,
 };

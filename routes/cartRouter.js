@@ -6,7 +6,7 @@ const cartController = require("../controllers/cartController");
 const { validateToken } = require("../utils/auth");
 
 router.get("", validateToken, cartController.cartList);
-router.post("", validateToken, cartController.addCart);
+router.post("", validateToken, cartController.createCart);
 router.patch("", validateToken, cartController.changeQuantity);
 router.delete("", validateToken, cartController.deleteCart);
 

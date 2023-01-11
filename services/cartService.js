@@ -4,8 +4,8 @@ const cartList = async (userId) => {
   return await cartDao.cartList(userId);
 };
 
-const addCart = async (userId, productId) => {
-  return await cartDao.addCart(userId, productId);
+const createCart = async (userId, productId) => {
+  return await cartDao.createCart(userId, productId);
 };
 
 const changeQuantity = async (userId, cartId, quantity) => {
@@ -18,7 +18,7 @@ const deleteCart = async (cartId) => {
 
 module.exports = {
   cartList,
-  addCart,
+  createCart,
   changeQuantity,
   deleteCart,
 };

@@ -7,10 +7,10 @@ const cartList = asyncErrorHandler(async (req, res) => {
   return res.status(200).json({ data: list });
 });
 
-const addCart = asyncErrorHandler(async (req, res) => {
+const createCart = asyncErrorHandler(async (req, res) => {
   const { productId } = req.body;
 
-  await cartService.addCart(req.userId, productId);
+  await cartService.createCart(req.userId, productId);
 
   return res.status(201).json({ message: "updateCart" });
 });
@@ -36,7 +36,7 @@ const deleteCart = asyncErrorHandler(async (req, res) => {
 
 module.exports = {
   cartList,
-  addCart,
+  createCart,
   changeQuantity,
   deleteCart,
 };
