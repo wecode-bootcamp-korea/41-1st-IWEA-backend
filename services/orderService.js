@@ -1,15 +1,12 @@
 const userDao = require("../models/userDao");
 const orderDao = require("../models/orderDao");
+const { throwCustomError } = require("../utils/error");
 
 const createOrder = async (userId, cartId, products, totalPrice) => {
   const userInfo = await userDao.userInfo(userId);
 
-  if (userInfo.points - totalPrice < 0) {
-    const error = new Error("Not_Enough_Points!");
-    error.statusCode = 400;
-
-    throw error;
-  }
+  if (userInfo.points - totalPrice < 0)
+    throwCustomError("NOT_ENOUGH_POINTS!", 400);
 
   const orderId = await orderDao.createOrder(
     userId,

@@ -1,5 +1,5 @@
 const { appDataSource } = require("./appDataSource");
-const queryRunner = appDataSource.createQueryRunner();
+const { throwCustomError } = require("../utils/error");
 
 const OrderStatusId = Object.freeze({
   ORDER_DONE: 1,
@@ -19,7 +19,9 @@ const PaymentMethodId = Object.freeze({
 });
 
 const createOrder = async (userId, cartId, products, totalPrice) => {
-  if (!products.length) throw new Error("NO_PRODUCTS");
+  if (!products.length) throwCustomError("NO_PRODUCTS", 400);
+
+  const queryRunner = appDataSource.createQueryRunner();
 
   await queryRunner.connect();
   await queryRunner.startTransaction();
@@ -112,6 +114,8 @@ const getOrder = async (userId) => {
 };
 
 const cancelOrder = async (userId, totalPrice, orderId) => {
+  const queryRunner = appDataSource.createQueryRunner();
+
   await queryRunner.connect();
   await queryRunner.startTransaction();
 
@@ -127,14 +131,14 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
       [orderId]
     );
 
-    await queryRunner.query(
-      `DELETE FROM
-        orders
-      WHERE
-       orders.id IN (?)
-      `,
-      [orderId]
-    );
+    // await queryRunner.query(
+    //   `DELETE FROM
+    //     orders
+    //   WHERE
+    //    orders.id IN (?)
+    //   `,
+    //   [orderId]
+    // );
 
     await queryRunner.query(
       `UPDATE 
