@@ -1,48 +1,44 @@
 const { appDataSource } = require("./appDataSource");
-
 const queryRunner = appDataSource.createQueryRunner();
 
 const OrderStatusId = Object.freeze({
-  orderDone: 1,
-  shipmentProcessing: 2,
-  shipmentCompleted: 3,
-  deliveryStart: 4,
-  deliveryCompleted: 5,
-  perchaseConfirmed: 6,
-  orderCancelled: 7,
-  paymentError: 8,
+  ORDER_DONE: 1,
+  SHIPMENT_PROCESSING: 2,
+  SHIPMENT_COMPLETED: 3,
+  DELIVERY_START: 4,
+  DELIVERY_COMPLETED: 5,
+  PERCHASE_CONFIRMED: 6,
+  ORDER_CANCELLED: 7,
+  PAYMENT_ERROR: 8,
 });
 
 const paymentMethodId = Object.freeze({
-  userCredit: 1,
-  creditCard: 2,
-  cash: 3,
+  USER_CREDIT: 1,
+  CREDIT_CARD: 2,
+  CASH: 3,
 });
 
 const createOrder = async (userId, cartId, products, totalPrice) => {
-  console.log("params", userId, cartId, products, totalPrice);
-
   if (!products.length) throw new Error("NO_PRODUCTS");
 
   await queryRunner.connect();
   await queryRunner.startTransaction();
 
   try {
-    // order 테이블에 userId와 order_status_id(주문완료) 넣기
-    await queryRunner.query(
+    const createOrder = await queryRunner.query(
       `INSERT INTO
         orders (user_id, order_status_id)
       VALUES
-        (?, ${OrderStatusId.orderDone})
-      `,
-      [userId]
+        (${userId}, ${OrderStatusId.ORDER_DONE});
+      `
     );
 
-    const [idData] = await queryRunner.query(`SELECT LAST_INSERT_ID();`);
+    const orderId = createOrder.insertId;
+    console.log("wpqkf", orderId);
+    // const [idData] = await queryRunner.query(`SELECT LAST_INSERT_ID();`);
 
-    const orderId = idData["LAST_INSERT_ID()"];
+    // const orderId = idData["LAST_INSERT_ID()"];
 
-    // carts에 있던 상품들 지워버리기
     await queryRunner.query(
       `DELETE FROM
         carts
@@ -52,19 +48,17 @@ const createOrder = async (userId, cartId, products, totalPrice) => {
       [cartId]
     );
 
-    // user 포인트 차감
     await queryRunner.query(
       `UPDATE
           users
         SET
           points = points - ?
         WHERE
-          id =?
+          id = ?
         `,
       [totalPrice, userId]
     );
 
-    // order_product 테이블에 데이터 넣기
     const query = `INSERT INTO
       order_product (order_id, product_id, quantity, order_status_id)
         VALUES ?;`;
@@ -76,17 +70,16 @@ const createOrder = async (userId, cartId, products, totalPrice) => {
         orderId,
         products[i].productId,
         products[i].quantity,
-        `${OrderStatusId.orderDone}`,
+        `${OrderStatusId.ORDER_DONE}`,
       ]);
     }
 
     await queryRunner.query(query, [values]);
 
-    // payment 테이블에 orderid, totalprice, methodid 넣기
     await queryRunner.query(
       `INSERT INTO
         payments (order_id, total_price, methods)
-      VALUES (?, ?, ${paymentMethodId.userCredit})
+      VALUES (?, ?, ${paymentMethodId.USER_CREDIT})
       `,
       [orderId, totalPrice]
     );
@@ -128,18 +121,17 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
   await queryRunner.startTransaction();
 
   try {
-    //주문취소로 바꾸기
     await queryRunner.query(
       `UPDATE
         orders
       SET
-        order_status_id = ${OrderStatusId.orderCancelled}
+        order_status_id = ${OrderStatusId.ORDER_CANCELLED}
       WHERE
        id = ?;
       `,
       [orderId]
     );
-    // orders 테이블에서 삭제
+
     await queryRunner.query(
       `DELETE FROM
         orders
@@ -149,7 +141,6 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
       [orderId]
     );
 
-    // users 테이블에서 user 포인트 반환 ^^
     await queryRunner.query(
       `UPDATE 
         users
