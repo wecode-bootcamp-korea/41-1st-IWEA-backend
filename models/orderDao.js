@@ -12,7 +12,7 @@ const OrderStatusId = Object.freeze({
   PAYMENT_ERROR: 8,
 });
 
-const paymentMethodId = Object.freeze({
+const PaymentMethodId = Object.freeze({
   USER_CREDIT: 1,
   CREDIT_CARD: 2,
   CASH: 3,
@@ -74,7 +74,7 @@ const createOrder = async (userId, cartId, products, totalPrice) => {
     await queryRunner.query(
       `INSERT INTO
         payments (order_id, total_price, methods)
-      VALUES (?, ?, ${paymentMethodId.USER_CREDIT})
+      VALUES (?, ?, ${PaymentMethodId.USER_CREDIT})
       `,
       [orderId, totalPrice]
     );
