@@ -1,57 +1,38 @@
 const cartService = require("../services/cartService");
+const { asyncErrorHandler } = require("../utils/error");
 
-const cartList = async (req, res) => {
-  try {
-    const list = await cartService.cartList(req.userId);
+const cartList = asyncErrorHandler(async (req, res) => {
+  const list = await cartService.cartList(req.userId);
 
-    return res.status(201).json({ data: list });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-};
+  return res.status(201).json({ data: list });
+});
 
-const addCart = async (req, res) => {
-  try {
-    const { productId } = req.body;
+const addCart = asyncErrorHandler(async (req, res) => {
+  const { productId } = req.body;
 
-    await cartService.addCart(req.userId, productId);
+  await cartService.addCart(req.userId, productId);
 
-    return res.status(201).json({ message: "updateCart" });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-};
+  return res.status(201).json({ message: "updateCart" });
+});
 
-const changeQuantity = async (req, res) => {
-  try {
-    const { cartId } = req.body;
-    const { quantity } = req.body;
+const changeQuantity = asyncErrorHandler(async (req, res) => {
+  const { cartId } = req.body;
+  const { quantity } = req.body;
 
-    await cartService.changeQuantity(req.userId, cartId, quantity);
+  await cartService.changeQuantity(req.userId, cartId, quantity);
 
-    const list = await cartService.cartList(req.userId);
+  const list = await cartService.cartList(req.userId);
 
-    return res.status(201).json({ data: list });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-};
+  return res.status(201).json({ data: list });
+});
 
-const deleteCart = async (req, res) => {
-  try {
-    const { cartId } = req.query;
+const deleteCart = asyncErrorHandler(async (req, res) => {
+  const { cartId } = req.query;
 
-    await cartService.deleteCart(cartId);
+  await cartService.deleteCart(cartId);
 
-    return res.status(201).json({ message: "CartDeleted" });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-};
+  return res.status(201).json({ message: "CartDeleted" });
+});
 
 module.exports = {
   cartList,

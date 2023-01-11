@@ -1,32 +1,23 @@
 const productService = require("../services/productService");
+const { asyncErrorHandler } = require("../utils/error");
 
-const productsList = async (req, res) => {
-  try {
-    const queryParams = req.query;
+const productsList = asyncErrorHandler(async (req, res) => {
+  const queryParams = req.query;
 
-    const { productsList, totalCount } = await productService.productsList(
-      queryParams
-    );
+  const { productsList, totalCount } = await productService.productsList(
+    queryParams
+  );
 
-    return res.status(200).json({ total: totalCount, data: productsList });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-};
+  return res.status(200).json({ total: totalCount, data: productsList });
+});
 
-const productDetails = async (req, res) => {
-  try {
-    const { productId } = req.params;
+const productDetails = asyncErrorHandler(async (req, res) => {
+  const { productId } = req.params;
 
-    const productDetails = await productService.productDetails(productId);
+  const productDetails = await productService.productDetails(productId);
 
-    return res.status(200).json({ data: productDetails });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
-  }
-};
+  return res.status(200).json({ data: productDetails });
+});
 
 module.exports = {
   productsList,

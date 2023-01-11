@@ -1,49 +1,39 @@
 const userService = require("../services/userService");
+const { asyncErrorHandler } = require("../utils/error");
 
-const signup = async (req, res) => {
-  try {
-    const { name, email, password, phoneNumber, address } = req.body;
+const signup = asyncErrorHandler(async (req, res) => {
+  const { name, email, password, phoneNumber, address } = req.body;
 
-    if (!name || !email || !password || !phoneNumber || !address) {
-      return res.status(400).json({ message: "KEY_ERROR" });
-    }
-
-    await userService.signup(name, email, password, phoneNumber, address);
-
-    return res.status(201).json({ message: "userCreated" });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
+  if (!name || !email || !password || !phoneNumber || !address) {
+    const err = new Error("KEY_ERROR");
+    err.statusCode = 400;
+    throw err;
   }
-};
 
-const signin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  await userService.signup(name, email, password, phoneNumber, address);
 
-    if (!email || !password) {
-      return res.status(401).json({ message: "KEY_ERROR" });
-    }
+  return res.status(201).json({ message: "userCreated" });
+});
 
-    jwtToken = await userService.signin(email, password);
+const signin = asyncErrorHandler(async (req, res) => {
+  const { email, password } = req.body;
 
-    return res.status(200).json({ accessToken: jwtToken });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 401).json({ message: err.message });
+  if (!email || !password) {
+    const err = new Error("KEY_ERROR");
+    err.statusCode = 400;
+    throw err;
   }
-};
 
-const userInfo = async (req, res) => {
-  try {
-    const info = await userService.userInfo(req.userId);
+  jwtToken = await userService.signin(email, password);
 
-    return res.status(200).json({ data: info });
-  } catch (err) {
-    console.log(err);
-    return res.status(err.statusCode || 401).json({ message: err.message });
-  }
-};
+  return res.status(200).json({ accessToken: jwtToken });
+});
+
+const userInfo = asyncErrorHandler(async (req, res) => {
+  const info = await userService.userInfo(req.userId);
+
+  return res.status(200).json({ data: info });
+});
 
 module.exports = {
   signup,
