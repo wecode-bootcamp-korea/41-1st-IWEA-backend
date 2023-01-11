@@ -131,15 +131,6 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
       [orderId]
     );
 
-    // await queryRunner.query(
-    //   `DELETE FROM
-    //     orders
-    //   WHERE
-    //    orders.id IN (?)
-    //   `,
-    //   [orderId]
-    // );
-
     await queryRunner.query(
       `UPDATE 
         users
