@@ -11,7 +11,7 @@ const createOrder = asyncErrorHandler(async (req, res) => {
 const getOrder = asyncErrorHandler(async (req, res) => {
   const list = await orderService.getOrder(req.userId);
 
-  return res.status(201).json({ data: list });
+  return res.status(200).json({ data: list });
 });
 
 const cancelOrder = asyncErrorHandler(async (req, res) => {
