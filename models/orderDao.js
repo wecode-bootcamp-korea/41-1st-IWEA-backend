@@ -34,17 +34,13 @@ const createOrder = async (userId, cartId, products, totalPrice) => {
     );
 
     const orderId = createOrder.insertId;
-    console.log("wpqkf", orderId);
-    // const [idData] = await queryRunner.query(`SELECT LAST_INSERT_ID();`);
-
-    // const orderId = idData["LAST_INSERT_ID()"];
 
     await queryRunner.query(
       `DELETE FROM
         carts
       WHERE
         carts.id IN (?);
-        `,
+      `,
       [cartId]
     );
 
@@ -64,7 +60,6 @@ const createOrder = async (userId, cartId, products, totalPrice) => {
         VALUES ?;`;
 
     let values = [];
-    console.log("products", products);
     for (let i = 0; i < products.length; i++) {
       values.push([
         orderId,
@@ -151,6 +146,7 @@ const cancelOrder = async (userId, totalPrice, orderId) => {
       `,
       [totalPrice, userId]
     );
+
     await queryRunner.commitTransaction();
   } catch (err) {
     console.log(err);
