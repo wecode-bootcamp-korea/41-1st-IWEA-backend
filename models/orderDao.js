@@ -94,13 +94,18 @@ const getOrder = async (userId) => {
   try {
     return await appDataSource.query(
       `SELECT
-        o.id,
+        o.id AS orderId,
+        o.created_at AS createdTime,
         s.status,
-        p.total_price
+        pm.total_price,
+        pr.thumbnail,
+        pr.korean_name AS name
       FROM
         orders o
-      INNER JOIN payments p ON o.id = p.order_id
+      INNER JOIN payments pm ON o.id = pm.order_id
       INNER JOIN order_status s ON s.id = o.order_status_id
+      INNER JOIN order_product  ON order_product.order_id = o.id
+      INNER JOIN products pr ON order_product.product_id = pr.id
       WHERE
         o.user_id = ?;
       `,
