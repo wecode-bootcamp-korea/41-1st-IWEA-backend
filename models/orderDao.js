@@ -95,7 +95,7 @@ const getOrder = async (userId) => {
     return await appDataSource.query(
       `SELECT
         o.id AS orderId,
-        o.created_at AS orderedTime,
+        DATE_FORMAT(o.created_at, '%Y-%m-%d') AS date,
         s.status,
         pm.total_price AS totalPrice,
         JSON_ARRAYAGG(
