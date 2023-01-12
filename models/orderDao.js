@@ -97,9 +97,9 @@ const getOrder = async (userId) => {
         o.id AS orderId,
         o.created_at AS orderedTime,
         s.status,
+        pm.total_price AS totalPrice,
         JSON_ARRAYAGG(
           JSON_OBJECT(
-            'totalPrice', pm.total_price,
             'productId', op.product_id,
             'eachPrice', pr.price,
             'cnt', op.quantity,
@@ -115,7 +115,7 @@ const getOrder = async (userId) => {
       INNER JOIN products pr ON op.product_id = pr.id
       WHERE
         o.user_id = ?
-	    GROUP BY o.id;
+	    GROUP BY o.id, pm.total_price;
       `,
       [userId]
     );
