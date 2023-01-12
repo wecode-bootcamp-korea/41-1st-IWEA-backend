@@ -101,6 +101,8 @@ const getOrder = async (userId) => {
           JSON_OBJECT(
             'totalPrice', pm.total_price,
             'productId', op.product_id,
+            'eachPrice', pr.price,
+            'cnt', op.quantity,
             'thumbnail', pr.thumbnail,
             'name', pr.korean_name
           )
