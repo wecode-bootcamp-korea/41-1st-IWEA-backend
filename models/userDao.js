@@ -67,7 +67,7 @@ const userInfo = async (userId) => {
     const [info] = await appDataSource.query(
       `SELECT
         name,
-        points
+        ifnull(points, 0) points
       FROM
         users
       WHERE
