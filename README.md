@@ -5,7 +5,7 @@
 - Wecode 41기 1st Project
 
 - 솔로라이프를 즐기는 미니멀리즘 30대 남성 고객을 위한 한국 가구 브랜드 IWEA
-- [IWEA 시연영상]('https://www.youtube.com/watch?v=F22Yeo5D7hM')
+- [IWEA 시연영상](https://www.youtube.com/watch?v=F22Yeo5D7hM)
 
 # 개발 인원 및 기간
 
