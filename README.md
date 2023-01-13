@@ -45,7 +45,7 @@
 
 ### 김가은
 
-`signup`, `signin`, `products`, `carts`, `orders`, `pagination`, `error handling`
+`DB 모델링`, `signup`, `signin`, `products`, `carts`, `orders`, `pagination`, `error handling`
 
 ### 심예윤
 
